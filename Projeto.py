@@ -27,7 +27,7 @@ while True:
         elif verif == 2:
             login = input("Crie seu nome de usuario: ")
             senha = input("Crie sua senha: ")
-            clientes.append([login, senha, False])
+            clientes.append([login,1 senha, False])
         continue
 
     elif opcao == 2:
@@ -257,28 +257,31 @@ while True:
                             if opcao == 1:
                                 busca = input("Digite o nome do Produto: ")
                                 if busca in estoque:                                    
+                                    for i in range(len(estoque)):
+                                        if busca == estoque[i][1]:
+                                            index = i
+                                    print(
+                                        f'A situação do seu produto no estoque: {estoque[index]}'
+                                    )        
+                                else:
                                     for i in range(len(produtos_cadastrados)):
                                         if busca == produtos_cadastrados[i][0]:
                                             index = i
                                             break
-                                print(
-                                    f"O situação do seu produto: {produtos_cadastrados[index]}"
+                                    print(
+                                    f"A situação do seu produto: {produtos_cadastrados[index]}"
                                 )
 
                             elif opcao == 2:
-                                busca = str(
-                                    input(
-                                        "Digite o Status dos produtos que deseja buscar: "
-                                    )
-                                ).upper()
-                                for i in range(len(produtos_cadastrados)):
-                                    if busca == produtos_cadastrados[i][2]:
-                                        ListaStatus.append([produtos_cadastrados[i]])
+                                print('Exibindo estoque:\n')
+                                for I in range(len(estoque)):
+                                    if 'PRODUTO' == estoque[i][0]:
+                                        ListaStatus.append([estoque[i]])
                                 print(
-                                    f"Você tem {len(ListaStatus)} produtos em: {busca}"
+                                    f"Você tem {len(ListaStatus)} produtos em seu estoque"
                                 )
                                 print(
-                                    f"Os seus produtos em {busca}s são:\n{ListaStatus}"
+                                    f"Os seus produtos em estoque são:\n{ListaStatus}"
                                 )
                                 ListaStatus.clear()
                             elif opcao == 0:
@@ -303,10 +306,10 @@ while True:
                                 index2 = i
 
                         if index2 != 'nada' :
-                            a = input(f"O status atual do produto é: {produtos_cadastrados[index][2]}, e seu valor no estoque é: R$ {estoque[index2][3]}. Deseja Atualizar?(S - Sim N - Não) ").upper()
+                            a = input(f"A quantidade atual do produto é: {estoque[index2][2]}, e seu valor no estoque é: R$ {estoque[index2][3]}. Deseja Atualizar?(S - Sim N - Não) ").upper()
                             if a == "S":
-                                b = input("Digite o novo status do produto: ").upper()
-                                produtos_cadastrados[index][2] = b
+                                b = int(input("Digite quanto foi adicionado ou retirado do produto: "))
+                                estoque[index][2] += b
                                 c = input("Qual o novo preço do produto? R$ ")
                                 estoque[index2][3] = c
                             else:
@@ -314,15 +317,15 @@ while True:
 
                         else:
                             a = input(
-                                f"O status atual do produto é: {produtos_cadastrados[index][2]}. Deseja Atulizar?(S - Sim N - Não)"
+                                f"A quantidade atual do produto é: {produtos_cadastrados[index][1]}. Deseja Atulizar?(S - Sim N - Não)"
                             ).upper()
                             if a == "S":
-                                b = input("Digite o novo status do produto: ").upper()
-                                produtos_cadastrados[index][2] = b
+                                b = int(input("Digite quanto foi adicionado ou retirado do produto: "))
+                                produtos_cadastrados[index][1] += b
                             elif a == "N":
                                 print("Retornando ao menu")
                                 break
-
+                            
                     elif controle == 4:
                         busca = input(
                             "Qual o nome do produto que deseja remover?\n"
