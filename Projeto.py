@@ -296,15 +296,32 @@ while True:
                             if busca == produtos_cadastrados[i][0]:
                                 index = i
                                 break
-                        a = input(
-                            f"O status atual do produto é: {produtos_cadastrados[index][2]}. Deseja Atulizar?(S - Sim N - Não)"
-                        ).upper()
-                        if a == "S":
-                            b = input("Digite o novo status do produto: ").upper()
-                            produtos_cadastrados[index][2] = b
-                        elif a == "N":
-                            print("Retornando ao menu")
-                            break
+                            
+                        index2 = 'nada'
+                        for i in range(len(estoque)):
+                            if busca == estoque[i][1] :
+                                index2 = i
+
+                        if index2 != 'nada' :
+                            a = input(f"O status atual do produto é: {produtos_cadastrados[index][2]}, e seu valor no estoque é: R$ {estoque[index2][3]}. Deseja Atualizar?(S - Sim N - Não) ").upper()
+                            if a == "S":
+                                b = input("Digite o novo status do produto: ").upper()
+                                produtos_cadastrados[index][2] = b
+                                c = input("Qual o novo preço do produto? R$ ")
+                                estoque[index2][3] = c
+                            else:
+                                print("Retornando ao menu")
+
+                        else:
+                            a = input(
+                                f"O status atual do produto é: {produtos_cadastrados[index][2]}. Deseja Atulizar?(S - Sim N - Não)"
+                            ).upper()
+                            if a == "S":
+                                b = input("Digite o novo status do produto: ").upper()
+                                produtos_cadastrados[index][2] = b
+                            elif a == "N":
+                                print("Retornando ao menu")
+                                break
 
                     elif controle == 4:
                         busca = input(
