@@ -459,7 +459,43 @@ while True:
                     else:
                         print("Opção inválida!!!")
                         continue
-
+            elif opcao == 3:
+                while True:
+                    print(
+                        f'{"\n"*4}O que você deseja buscar, {user_logado[0][0]}? \n     *****MENU*****\n 1 - Cadastrar uma ração\n 2 - Vizualizar Estoque\n 3 - Atulizar estoque 0 - Sair da busca\n'
+                    )
+                    opcao = int(input("Digite a opção desejada: "))
+                    if opcao == 1:
+                        nome = str(input("Qual o Nome da raçao?\n")).upper()
+                        Tipo = str(input("Qual o tipo da raçao?\n")).upper()
+                        Quantidade = int(input("Qual a quantidade de ração(em kg)?\n"))
+                        racao.append([nome, Tipo, Quantidade])
+                    elif opcao == 2:
+                        for i in range(len(racao)):
+                            print(
+                                f"A sua ração {racao[i][0]} de {racao[i][1]}tem {racao[i][2]}kg restantes."
+                            )
+                    elif opcao == 3:
+                        busca = input(
+                            "Qual o nome do produto que deseja atualizar?\n"
+                        ).upper()
+                        for i in range(len(racao)):
+                            if busca == racao[i][0]:
+                                index = i
+                                break
+                        a = input(
+                            f"A quantidade atual da ração {racao[index][0]} é: {racao[index][2]}. Deseja Atulizar?(S - Sim N - Não)"
+                        ).upper()
+                        if a == "S":
+                            b = int(
+                                input(
+                                    "Digite quanto foi adicionado ou retirado de ração: "
+                                )
+                            )
+                            racao[index][2] += b
+                        elif a == "N":
+                            print("Retornando ao menu")
+                            break
             elif opcao == 0:
                 print("Retomando...")
                 logado = False
