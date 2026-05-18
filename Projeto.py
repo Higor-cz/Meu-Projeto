@@ -2,16 +2,18 @@ lista1 = []
 adms = [["higor", "123", True]]
 clientes = [["caio", "123", False]]
 user_logado = []
-animais_cadastrados = [["TIPO", "ID", "STATUS", "VENDA OU NÃO"]]
-produtos_cadastrados = [["OVO", 10, "VENDA"]]
+animais_cadastrados = []
+produtos_cadastrados = []
 ListaTipos = []
 ListaStatus = []
 index = 0
 index2 = -1
 logado = False
 agendamentos = []
-estoque = [[produtos_cadastrados[0], 10]]
+estoque = []
 racao = []
+pedidos_compra = []
+
 while True:
     print("     *****MENU*****\n 1 - Cadastrar\n 2 - Login\n 0 - Encerrar")
     opcao = int(input("Digite a opção desejada: "))
@@ -24,7 +26,6 @@ while True:
             login = input("Crie seu nome de usuario: ")
             senha = input("Crie sua senha: ")
             adms.append([login, senha, True])
-
         elif verif == 2:
             login = input("Crie seu nome de usuario: ")
             senha = input("Crie sua senha: ")
@@ -42,8 +43,7 @@ while True:
                     logado = True
                     user_logado = [[adm[0], adm[2]]]
                     break
-
-            if logado == False:
+            if not logado:
                 print("Login ou senha incorretos...")
                 continue
 
@@ -53,9 +53,9 @@ while True:
             for cliente in clientes:
                 if login == cliente[0] and senha == cliente[1]:
                     logado = True
-                    user_logado = [cliente[0], cliente[2]]
+                    user_logado = [[cliente[0], cliente[2]]]
                     break
-            if logado == False:
+            if not logado:
                 print("Login ou senha incorretos...")
                 continue
     elif opcao == 0:
@@ -67,7 +67,7 @@ while True:
     if user_logado and user_logado[0][1] == True:
         while True:
             print(
-                f'{"\n"*4}Bem-vindo, {user_logado[0][0]} \n     *****MENU*****\n 1 - Gerenciar Rebanho\n 2 - Gerenciar Produção e Derivados\n 3 - 0 Gerenciar Estoque de ração \n 0 - Menu de Cadastro\n'
+                f'{"\n"*4}Bem-vindo, {user_logado[0][0]} \n     *****MENU*****\n 1 - Gerenciar Rebanho\n 2 - Gerenciar Produção e Derivados\n 3 - Gerenciar Estoque de Ração\n 4 - Visualizar Pedidos de Compra\n 0 - Menu de Cadastro\n'
             )
             opcao = int(input("Digite a opção desejada: "))
 
@@ -117,7 +117,6 @@ while True:
                                 for i in range(len(animais_cadastrados)):
                                     if busca == animais_cadastrados[i][0]:
                                         ListaTipos.append(animais_cadastrados[i])
-
                                 print(f"Os seus {busca}s são:\n{ListaTipos}")
                                 print(f"Você tem {len(ListaTipos)} {busca}s")
                                 ListaTipos.clear()
@@ -138,6 +137,7 @@ while True:
                                     f"Os seus animais em {busca}s são:\n{ListaStatus}"
                                 )
                                 ListaStatus.clear()
+
                             elif opcao == 4:
                                 print("Animais à venda:\n")
                                 for i in range(len(estoque)):
@@ -145,9 +145,11 @@ while True:
                                         ListaStatus.append(estoque[i])
                                 print(f"Você tem {len(ListaStatus)} animais à VENDA")
                                 print(
-                                    f"Os seus animais à são:\n{ListaStatus}", end="\n"
+                                    f"Os seus animais à venda são:\n{ListaStatus}",
+                                    end="\n",
                                 )
                                 ListaStatus.clear()
+
                             elif opcao == 0:
                                 print("Encerrando busca.")
                                 break
@@ -165,6 +167,7 @@ while True:
                             if busca == animais_cadastrados[i][1]:
                                 index = i
                                 break
+                        index2 = -1
                         for i in range(len(estoque)):
                             if busca == estoque[i][1]:
                                 index2 = i
@@ -256,11 +259,14 @@ while True:
                             opcao = int(input("Digite a opção desejada: "))
 
                             if opcao == 1:
-                                busca = input("Digite o nome do Produto: ")
-                                if busca in estoque:
-                                    for i in range(len(estoque)):
-                                        if busca == estoque[i][1]:
-                                            index = i
+                                busca = input("Digite o nome do Produto: ").upper()
+                                achou_estoque = False
+                                for i in range(len(estoque)):
+                                    if busca == estoque[i][1]:
+                                        index = i
+                                        achou_estoque = True
+                                        break
+                                if achou_estoque:
                                     print(
                                         f"A situação do seu produto no estoque: {estoque[index]}"
                                     )
@@ -275,7 +281,7 @@ while True:
 
                             elif opcao == 2:
                                 print("Exibindo estoque:\n")
-                                for I in range(len(estoque)):
+                                for i in range(len(estoque)):
                                     if "PRODUTO" == estoque[i][0]:
                                         ListaStatus.append([estoque[i]])
                                 print(
@@ -285,6 +291,7 @@ while True:
                                     f"Os seus produtos em estoque são:\n{ListaStatus}"
                                 )
                                 ListaStatus.clear()
+
                             elif opcao == 0:
                                 print("Encerrando busca.")
                                 break
@@ -301,13 +308,13 @@ while True:
                                 index = i
                                 break
 
-                        NoEstoque = "Inexistente"
+                        index2 = -1
                         for i in range(len(estoque)):
                             if busca == estoque[i][1]:
                                 index2 = i
                                 break
 
-                        if NoEstoque != "Inexistente":
+                        if index2 > -1:
                             a = input(
                                 f"A quantidade atual do produto é: {estoque[index2][2]}, e seu valor no estoque é: R$ {estoque[index2][3]}. Deseja Atualizar?(S - Sim N - Não) "
                             ).upper()
@@ -317,11 +324,10 @@ while True:
                                         "Digite quanto foi adicionado ou retirado do produto: "
                                     )
                                 )
-                                estoque[index][2] += b
+                                estoque[index2][2] += b
                                 produtos_cadastrados[index][1] += b
                                 c = input("Qual o novo preço do produto? R$ ")
                                 estoque[index2][3] = c
-
                         else:
                             a = input(
                                 f"A quantidade atual do produto é: {produtos_cadastrados[index][1]}. Deseja Atulizar?(S - Sim N - Não)"
@@ -350,7 +356,6 @@ while True:
                         ).upper()
                         if a == "S":
                             produtos_cadastrados.pop(index)
-
                             for i in range(len(estoque)):
                                 if estoque[i][1] == busca:
                                     estoque.pop(i)
@@ -358,6 +363,99 @@ while True:
                         elif a == "N":
                             print("Retornando ao menu")
                             break
+                    else:
+                        print("Opção inválida!!!")
+                        continue
+
+            elif opcao == 3:
+                while True:
+                    print(
+                        f'{"\n"*4}Gerenciar Ração, {user_logado[0][0]}? \n     *****MENU*****\n 1 - Cadastrar uma ração\n 2 - Vizualizar Estoque\n 3 - Atulizar estoque\n 0 - Sair\n'
+                    )
+                    opcao = int(input("Digite a opção desejada: "))
+                    if opcao == 1:
+                        nome = str(input("Qual o Nome da raçao?\n")).upper()
+                        Tipo = str(input("Qual o tipo da raçao?\n")).upper()
+                        Quantidade = int(input("Qual a quantidade de ração(em kg)?\n"))
+                        racao.append([nome, Tipo, Quantidade])
+                    elif opcao == 2:
+                        for i in range(len(racao)):
+                            print(
+                                f"A sua ração {racao[i][0]} de {racao[i][1]} tem {racao[i][2]}kg restantes."
+                            )
+                    elif opcao == 3:
+                        busca = input(
+                            "Qual o nome do produto que deseja atualizar?\n"
+                        ).upper()
+                        for i in range(len(racao)):
+                            if busca == racao[i][0]:
+                                index = i
+                                break
+                        a = input(
+                            f"A quantidade atual da ração {racao[index][0]} é: {racao[index][2]}. Deseja Atulizar?(S - Sim N - Não)"
+                        ).upper()
+                        if a == "S":
+                            b = int(
+                                input(
+                                    "Digite quanto foi adicionado ou retirado de ração: "
+                                )
+                            )
+                            racao[index][2] += b
+                        elif a == "N":
+                            print("Retornando ao menu")
+                            break
+                    elif opcao == 0:
+                        break
+
+            elif opcao == 4:
+                while True:
+                    print(
+                        f'{"\n"*4}Pedidos de Compra \n     *****MENU*****\n 1 - Visualizar seus pedidos pendentes\n 2 - Validar um pedido\n 0 - Voltar\n'
+                    )
+                    controle = int(input("Digite a opção desejada: "))
+
+                    if controle == 0:
+                        break
+
+                    elif controle == 1:
+                        pedido_encontrado = False
+                        for i in range(len(pedidos_compra)):
+                            print(
+                                f"[{i}] Cliente: {pedidos_compra[i][0]} | Produto: {pedidos_compra[i][1]} | Quantidade: {pedidos_compra[i][2]} | Prazo: {pedidos_compra[i][3]} | Situação: {pedidos_compra[i][4]}"
+                            )
+                            pedido_encontrado = True
+                        if not pedido_encontrado:
+                            print("Nenhum pedido de compra registrado.")
+
+                    elif controle == 2:
+                        if len(pedidos_compra) == 0:
+                            print("Nenhum pedido para validar.")
+                            continue
+
+                        for i in range(len(pedidos_compra)):
+                            if pedidos_compra[i][4] == "PENDENTE":
+                                print(
+                                    f"[{i}] Cliente: {pedidos_compra[i][0]} | Produto: {pedidos_compra[i][1]} | Quantidade: {pedidos_compra[i][2]} | Prazo: {pedidos_compra[i][3]}"
+                                )
+
+                        posicao_pedido = int(
+                            input("\nDigite o número do pedido que deseja validar: ")
+                        )
+
+                        if posicao_pedido < 0 or posicao_pedido >= len(pedidos_compra):
+                            print("Pedido inválido.")
+                            continue
+
+                        resposta = input(
+                            f"Deseja APROVAR o pedido de {pedidos_compra[posicao_pedido][1]} do cliente {pedidos_compra[posicao_pedido][0]}? (S - Sim / N - Não) "
+                        ).upper()
+
+                        if resposta == "S":
+                            pedidos_compra[posicao_pedido][4] = "APROVADO"
+                            print("Pedido aprovado com sucesso!")
+                        elif resposta == "N":
+                            pedidos_compra[posicao_pedido][4] = "RECUSADO"
+                            print("Pedido recusado.")
                     else:
                         print("Opção inválida!!!")
                         continue
@@ -404,15 +502,10 @@ while True:
                 user_logado = []
                 break
 
-        """
-        R5 - Efetuar Compra: O cliente logado pode visualizar o estoque e comprar produtos (ex: 10kg de Queijo Coalho ou 5 Leitões). A compra deve diminuir a quantidade disponível nas listas de estoque do administrador. Usuário ADM não pode fazer compras.
-
-        R6 - Agendar Retirada/Transporte: O cliente deve agendar uma data e horário para o caminhão buscar o leite, os queijos ou os animais comprados na fazenda.
-        """
     elif user_logado and user_logado[0][1] != True and logado == True:
         while True:
             print(
-                f'{"\n"*4}Bem-vindo, {user_logado[0][0]} \n     *****MENU CLIENTE*****\n 1 - Comprar \n 2 - Visualizar Estoque\n 3 - Agendar Retirada/Transporte\n 4 - Ver Meus Agendamentos\n 0 - Sair\n'
+                f'{"\n"*4}Bem-vindo, {user_logado[0][0]} \n     *****MENU CLIENTE*****\n 1 - Comprar\n 2 - Visualizar Estoque\n 3 - Agendar Retirada/Transporte\n 4 - Ver Meus Agendamentos\n 5 - Fazer Pedido de Compra\n 6 - Ver Meus Pedidos\n 0 - Sair\n'
             )
             opcao_cliente = int(input("Digite a opção desejada: "))
 
@@ -420,6 +513,12 @@ while True:
                 if len(estoque) == 0:
                     print("Nenhum item disponível no momento.")
                     continue
+
+                print("\n===== ITENS DISPONÍVEIS =====")
+                for posicao_item in range(len(estoque)):
+                    print(
+                        f"[{posicao_item}] {estoque[posicao_item][0]} | {estoque[posicao_item][2]} | Preço: R$ {estoque[posicao_item][3]}"
+                    )
 
                 posicao_escolhida = int(
                     input("\nDigite o número do item que deseja comprar: ")
@@ -452,12 +551,28 @@ while True:
                     )
 
             elif opcao_cliente == 3:
-
                 print("\n===== AGENDAR RETIRADA/TRANSPORTE =====")
 
-                item_para_retirar = input(
-                    "O que deseja retirar? (ex: 10kg Queijo Coalho, 5 Leitões, Leite): "
+                if len(estoque) == 0:
+                    print("Nenhum item disponível no estoque para agendar retirada.")
+                    continue
+
+                print("Itens disponíveis para retirada:")
+                for posicao_item in range(len(estoque)):
+                    print(
+                        f"[{posicao_item}] {estoque[posicao_item][0]} | {estoque[posicao_item][2]} | Preço: R$ {estoque[posicao_item][3]}"
+                    )
+
+                posicao_agendamento = int(
+                    input("\nDigite o número do item que deseja agendar a retirada: ")
                 )
+
+                if posicao_agendamento < 0 or posicao_agendamento >= len(estoque):
+                    print("Item inválido.")
+                    continue
+
+                item_para_retirar = f"{estoque[posicao_agendamento][2]} ({estoque[posicao_agendamento][0]})"
+
                 data_retirada = input("Informe a data para retirada (ex: 25/06/2025): ")
                 horario_retirada = input(
                     "Informe o horário para retirada (ex: 14:00): "
@@ -494,6 +609,47 @@ while True:
                 if not agendamento_encontrado:
                     print("Você não possui agendamentos.")
 
+            elif opcao_cliente == 5:
+                print("\n===== FAZER PEDIDO DE COMPRA =====")
+                nome_produto_pedido = input(
+                    "Qual o nome do produto que deseja pedir? "
+                ).upper()
+                quantidade_pedido = int(input("Qual a quantidade desejada? "))
+                prazo_pedido = input("Para quando você precisa? (ex: 30/06/2025): ")
+
+                confirmacao_pedido = input(
+                    f"\nConfirmar pedido?\n  Produto: {nome_produto_pedido}\n  Quantidade: {quantidade_pedido}\n  Prazo: {prazo_pedido}\n(S - Sim / N - Não) "
+                ).upper()
+
+                if confirmacao_pedido == "S":
+
+                    pedidos_compra.append(
+                        [
+                            user_logado[0][0],
+                            nome_produto_pedido,
+                            quantidade_pedido,
+                            prazo_pedido,
+                            "PENDENTE",
+                        ]
+                    )
+                    print(
+                        "Pedido realizado com sucesso! Aguarde a validação do administrador."
+                    )
+                else:
+                    print("Pedido cancelado.")
+
+            elif opcao_cliente == 6:
+                print("\n===== MEUS PEDIDOS DE COMPRA =====")
+                pedido_encontrado = False
+                for pedido_atual in pedidos_compra:
+                    if pedido_atual[0] == user_logado[0][0]:
+                        print(
+                            f"Produto: {pedido_atual[1]} | Quantidade: {pedido_atual[2]} | Prazo: {pedido_atual[3]} | Situação: {pedido_atual[4]}"
+                        )
+                        pedido_encontrado = True
+                if not pedido_encontrado:
+                    print("Você não possui pedidos de compra.")
+
             elif opcao_cliente == 0:
                 print("Saindo...")
                 logado = False
@@ -502,4 +658,3 @@ while True:
             else:
                 print("Opção inválida!")
                 continue
-#PEDIDO DE COMPRA, UM PEDIDO DE COMPRA EU QUANDO O CLIENTE VÊ QUE NÃO TEM O PRODUTO EM ESTOQUE. MAS ELE DESEJA PEDIR UMA DETERMINADA QUANTIDADE DESSE PRODUTO PRO ADM. ELE CADASTRA O NOME DO PRODUTO, A QUANTIDADE DESEJADA E PRA QUANDO ELE PRECISA. ESSE PEDIDO TEM QUE APARECER PRO ADM(PS: ADICIOANR OPCAO NO MEU ADM PRA VIZUALIZAR PEDIDOS DE COMPRA), O ADM DEVE VALIDAR O PEDIDO OU NÃO. ENQUANTO O ADM NÃO VALIDAR DEVE APARCER PRO CLIENTE COMO PENDENTE O ADM RESPONDE COM S OU N E RETORNA PRO CLIENTE. O CLIENTE DEVE TER COMO VIZUALIZAR SEUS PEDIDOS DE COMPRA E SUA SITUAÇÃO.
